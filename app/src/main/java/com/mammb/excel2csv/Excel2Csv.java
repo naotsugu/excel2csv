@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Excel2Csv {
@@ -51,7 +52,7 @@ public class Excel2Csv {
                 new PrintWriter(csv.toFile(), StandardCharsets.UTF_8), CSVFormat.EXCEL));
              final OPCPackage pkg = OPCPackage.open(xlsx.toFile(), PackageAccess.READ)) {
 
-            final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg);
+            final ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg, false);
             final XSSFReader xssfReader = new XSSFReader(pkg);
             final StylesTable styles = xssfReader.getStylesTable();
             final XSSFReader.SheetIterator sheets = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
@@ -153,7 +154,11 @@ public class Excel2Csv {
             if (DateUtil.isADateFormat(formatIndex, formatString)) {
                 if (DateUtil.isValidExcelDate(value)) {
                     Date d = DateUtil.getJavaDate(value, use1904Windowing);
-                    return formatter.formatAsString(formatString, d);
+                    String fixedFormatString = (formatIndex == 14 &&
+                            Locale.getDefault().getLanguage().equals(Locale.JAPANESE.getLanguage()))
+                                ? "yyyy/m/d"
+                                : formatString;
+                    return formatter.formatAsString(fixedFormatString, d);
                 }
             }
             return super.formatRawCellContents(value, formatIndex, formatString, use1904Windowing);
