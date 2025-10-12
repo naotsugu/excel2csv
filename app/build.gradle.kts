@@ -10,8 +10,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.apache.poi:poi:5.2.5")
-    implementation("org.apache.poi:poi-ooxml:5.2.5")
+    implementation("org.apache.poi:poi:5.4.1")
+    implementation("org.apache.poi:poi-ooxml:5.4.1")
     implementation("org.apache.commons:commons-csv:1.10.0")
     implementation("com.github.mygreen:excel-cellformatter:0.12")
     implementation("org.slf4j:slf4j-simple:2.0.5")
